@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>인증 완료 - SPORTLINK</title>
+<style>:root { --bg:#ffffff; --fg:#0a0e17; --muted:#5b6472; --line:#edeff2; --accent:#1b5ff0; --on-accent:#ffffff; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --fg:#eef0f3; --muted:#a3abb8; --line:#262a31; --accent:#5b8def; --on-accent:#ffffff; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif; line-height:1.7; }
+main { max-width:480px; margin:0 auto; padding:64px 16px; }
+.brand { font-weight:800; letter-spacing:0.04em; color:var(--accent); margin:0 0 32px; }
+h1 { font-size:26px; line-height:1.35; margin:0 0 12px; }
+p { color:var(--muted); margin:0 0 12px; }
+.button { display:block; text-align:center; margin:32px 0 12px; padding:16px; border-radius:14px; background:var(--accent); color:var(--on-accent); font-weight:700; text-decoration:none; }
+.hint { font-size:14px; }
+.hidden { display:none; }
+</style>
+</head>
+<body><main>
+<p class="brand">SPORTLINK</p>
+<section id="done">
+  <h1>인증이 완료됐어요.<br>앱으로 돌아가 주세요</h1>
+  <p>SPORTLINK 앱에서 이어서 시작하면 돼요.</p>
+  <a id="open" class="button" href="sportlink://auth-callback">SPORTLINK 앱 열기</a>
+  <p class="hint">앱이 열리지 않거나 다른 기기에서 열었다면, 앱의 코드 입력 화면에서 메일의 6자리 코드를 넣어 주세요. 가입이라면 "메일의 링크로 이미 인증했어요" 를 눌러도 돼요.</p>
+</section>
+<section id="failed" class="hidden">
+  <h1>링크가 만료됐거나<br>이미 사용됐어요</h1>
+  <p>앱의 코드 입력 화면에서 메일의 6자리 코드를 넣거나, 새 코드를 받아 주세요.</p>
+  <a class="button" href="sportlink://auth-callback">SPORTLINK 앱 열기</a>
+</section>
+<script>
+(function () {
+  var query = new URLSearchParams(window.location.search);
+  var hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+  var failed = query.has('error') || query.has('error_code') || hash.has('error') || hash.has('error_code');
+  if (failed) {
+    document.getElementById('done').className = 'hidden';
+    document.getElementById('failed').className = '';
+    return;
+  }
+  // 로그인 코드(code)만 앱에 넘긴다. 코드는 가입한 그 앱에 남은 검증값이 있어야만 쓸 수 있다.
+  var code = query.get('code');
+  if (!code || !/^[A-Za-z0-9._~-]{1,200}$/.test(code)) return;
+  var appUrl = 'sportlink://auth-callback?code=' + encodeURIComponent(code);
+  document.getElementById('open').href = appUrl;
+  // 주소창에서 코드를 지운다.
+  if (window.history && window.history.replaceState) window.history.replaceState(null, '', window.location.pathname);
+  // 한 번은 바로 열어 본다. 막히면 버튼을 누르면 된다.
+  window.setTimeout(function () { window.location.href = appUrl; }, 300);
+})();
+</script>
+</main></body>
+</html>
