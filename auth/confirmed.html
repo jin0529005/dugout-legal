@@ -24,13 +24,13 @@ p { color:var(--muted); margin:0 0 12px; }
 <section id="done">
   <h1>인증이 완료됐어요.<br>앱으로 돌아가 주세요</h1>
   <p>더그아웃 앱에서 이어서 시작하면 돼요.</p>
-  <a id="open" class="button" href="sportlink://auth-callback">더그아웃 앱 열기</a>
+  <a id="open" class="button" href="dugout://auth-callback">더그아웃 앱 열기</a>
   <p class="hint">앱이 열리지 않거나 다른 기기에서 열었다면, 앱의 코드 입력 화면에서 메일의 6자리 코드를 넣어 주세요. 가입이라면 "메일의 링크로 이미 인증했어요" 를 눌러도 돼요.</p>
 </section>
 <section id="failed" class="hidden">
   <h1>링크가 만료됐거나<br>이미 사용됐어요</h1>
   <p>앱의 코드 입력 화면에서 메일의 6자리 코드를 넣거나, 새 코드를 받아 주세요.</p>
-  <a class="button" href="sportlink://auth-callback">더그아웃 앱 열기</a>
+  <a class="button" href="dugout://auth-callback">더그아웃 앱 열기</a>
 </section>
 <script>
 (function () {
@@ -45,7 +45,7 @@ p { color:var(--muted); margin:0 0 12px; }
   // 로그인 코드(code)만 앱에 넘긴다. 코드는 가입한 그 앱에 남은 검증값이 있어야만 쓸 수 있다.
   var code = query.get('code');
   if (!code || !/^[A-Za-z0-9._~-]{1,200}$/.test(code)) return;
-  var appUrl = 'sportlink://auth-callback?code=' + encodeURIComponent(code);
+  var appUrl = 'dugout://auth-callback?code=' + encodeURIComponent(code);
   document.getElementById('open').href = appUrl;
   // 주소창에서 코드를 지운다.
   if (window.history && window.history.replaceState) window.history.replaceState(null, '', window.location.pathname);
